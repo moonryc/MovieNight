@@ -51,21 +51,10 @@ const createAutoFillListOfMovies = function () {
 }
 
 /**
- * Creates a random movie from the array of 250 movies and displays the movie
- */
-const getRandomMovie = () => {
-    const index = Math.floor(Math.random() * autoFillMovies.length)
-    if(displayedMovies.includes(autoFillMovies[index])){
-        return getRandomMovie()
-    }
-    getMovieInformation(autoFillMovies[index])
-}
-
-/**
  * fetches information on the movie submited creates the movie card if a card is found
  * @param movie
  */
-var getMovieInformation = function (movie) {
+const getMovieInformation = function (movie) {
     var apiUrl = 'https://www.omdbapi.com/?apikey=301ca359&t=' + movie + '&plot=full';
     fetch(apiUrl)
         .then(function (response) {
@@ -81,13 +70,43 @@ var getMovieInformation = function (movie) {
                 errorHandler("unable to find data for this movie")
             }
         });
+};
+/**
+ * Creates a random movie from the array of 250 movies and displays the movie
+ */
+const getRandomMovie = () => {
+    const index = Math.floor(Math.random() * autoFillMovies.length)
+    if(displayedMovies.includes(autoFillMovies[index])){
+        return getRandomMovie()
+    }
+    getMovieInformation(autoFillMovies[index])
 }
 
+const saveSearchedMovie = function (movieDetails) {
+    if (searchHistory.length === 0) {
+        searchHistory.push(movieDetails)
+        localStorage.setItem('movieSearches', JSON.stringify(searchHistory))
+    }
+    else {
+        for (var i = 0; i < searchHistory.length; i++) {
+            if (movieDetails.movieTitle === searchHistory[i].movieTitle) {
+                return
+            }
+            else {
+                var movieNotSearchedYet = true
+            }
+        }
+    }
+    if (movieNotSearchedYet === true) {
+        searchHistory.push(movieDetails)
+        localStorage.setItem('movieSearches', JSON.stringify(searchHistory))
+    }
+};
 /**
  * organizes the information retreived on a movie
  * @param movieInfo
  */
-var displayMovieData = function (movieInfo) {
+const displayMovieData = function (movieInfo) {
 
     const parseRatingData = (ratingArray) => {
 
@@ -126,28 +145,8 @@ var displayMovieData = function (movieInfo) {
     saveSearchedMovie(movieDetails)
     createMovieCard(movieDetails)
 
-}
+};
 
-var saveSearchedMovie = function (movieDetails) {
-    if (searchHistory.length === 0) {
-        searchHistory.push(movieDetails)
-        localStorage.setItem('movieSearches', JSON.stringify(searchHistory))
-    }
-    else {
-        for (var i = 0; i < searchHistory.length; i++) {
-            if (movieDetails.movieTitle === searchHistory[i].movieTitle) {
-                return
-            }
-            else {
-                var movieNotSearchedYet = true
-            }
-        }
-    }
-    if (movieNotSearchedYet === true) {
-        searchHistory.push(movieDetails)
-        localStorage.setItem('movieSearches', JSON.stringify(searchHistory))
-    }
-}
 
 /**
  * Generates a Movie card based on the Movie Details Objects passed into it
@@ -165,11 +164,13 @@ const createMovieCard = (movieDetails) => {
     const isMovieFavorited = favoriteMovies.includes(movieDetails.movieTitle)
 
     //Create Column
-    const column = $("<div class='column'>")
+    const column = $("<div class='column Movie-Card'>")
+    const insideColumn = $("<div class='card-parent'>")
+    insideColumn.appendTo(column)
 
     //Create Card
     const cardEl = $("<div class='card' style='width:500px'>")
-    cardEl.appendTo(column)
+    cardEl.appendTo(insideColumn)
 
     //Card Header
     const cardHeader = $("<div class='card-header'>")
@@ -302,39 +303,6 @@ const loadSearchHistory = function () {
     }
 }
 
-
-/**
- * Submit movie handler
- */
-$("#form").submit(function (event) {
-    event.preventDefault();
-    const input = $($(this)[0][0]).val().trim()
-    getMovieInformation(input)
-    $("#autocomplete").val("")
-})
-
-/**
- * Popular movie button handler
- */
-$("#popular").click(() => {
-    getRandomMovie()
-})
-
-/**
- * Handler for the autocomplete
- */
-$("#autocomplete").autocomplete({
-    source: (request, response) => {
-        let results = $.ui.autocomplete.filter(autoFillMovies, $("#autocomplete").val());
-        response(results.slice(0, 10))
-    },
-    open: function () {
-        $("ul.ui-menu").width($(this).innerWidth())
-    },
-    minLength: 0,
-
-})
-
 const displayFavorites = function () {
 
     favoritesModal.classList.add('is-active')
@@ -417,7 +385,7 @@ const displayFavorites = function () {
     }
 }
 
-let closeFavorites = function () {
+const closeFavorites = function () {
     favoritesModal.classList.toggle('is-active')
 }
 
@@ -517,10 +485,47 @@ const displayHistory = function () {
     }
 }
 
+
+/**
+ * Submit movie handler
+ */
+$("#form").submit(function (event) {
+    event.preventDefault();
+    const input = $($(this)[0][0]).val().trim()
+    getMovieInformation(input)
+    $("#autocomplete").val("")
+})
+
+/**
+ * Popular movie button handler
+ */
+$("#popular").click(() => {
+    getRandomMovie()
+})
+
+/**
+ * Handler for the autocomplete
+ */
+$("#autocomplete").autocomplete({
+    source: (request, response) => {
+        let results = $.ui.autocomplete.filter(autoFillMovies, $("#autocomplete").val());
+        response(results.slice(0, 10))
+    },
+    open: function () {
+        $("ul.ui-menu").width($(this).innerWidth())
+    },
+    minLength: 0,
+
+})
+
 // clear the entire page button 
 $("#clear-entire-page").click(function () {
     $('#Search-Cards').empty();
     displayedMovies = [];
+})
+
+$(".burger").click(()=>{
+    document.querySelector('.navbar-menu').classList.toggle('is-active'); document.querySelector('.navbar-burger').classList.toggle('is-active')
 })
 
 let closeHistory = function () {

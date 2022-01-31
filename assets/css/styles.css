@@ -50,6 +50,14 @@ p > a {
     text-underline-offset: 2px;
 }
 
+
+.card-parent{
+    display: flex;
+    justify-content: center;
+}
+
+
+
 /*Themeing for autocomplete box*/
 .ui-autocomplete{
     background: white;
