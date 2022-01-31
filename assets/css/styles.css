@@ -1,6 +1,6 @@
 * {
     font-family: 'Raleway', sans-serif;
-    
+
 }
 
 :root {
@@ -9,10 +9,10 @@
 
 .hero.is-info {
     background: linear-gradient(
-        rgba(255, 255, 255, 0.1),
-        rgba(0, 0, 0, 0)
-        ),
-        url('../images/hero-background.jpg') no-repeat center center fixed;
+            rgba(255, 255, 255, 0.1),
+            rgba(0, 0, 0, 0)
+    ),
+    url('../images/hero-background.jpg') no-repeat center center fixed;
     background-size: cover;
 }
 
@@ -37,7 +37,7 @@
 }
 
 .our-footer {
-    background-color:  rgba(0, 0, 0, 0.45);
+    background-color: rgba(0, 0, 0, 0.45);
     padding: 1rem;
 }
 
@@ -51,22 +51,38 @@ p > a {
 }
 
 
-.card-parent{
+.card-parent {
     display: flex;
     justify-content: center;
 }
 
 
-
 /*Themeing for autocomplete box*/
-.ui-autocomplete{
+.ui-autocomplete {
     background: white;
     border-bottom: black 2px solid;
     border-left: black 2px solid;
     border-right: black 2px solid;
 }
 
-@media screen and (max-width: 1023px){
-.hero.is-info .navbar-menu {
-    background-color: var(--primary);
-}}
+@media screen and (max-width: 1023px) {
+    .hero.is-info .navbar-menu {
+        background-color: var(--primary);
+        display:flex;
+        justify-content: center;
+        align-content: center;
+        align-items: center;
+        /*flex-direction: column;*/
+    }
+
+    button > .navbar-end{
+        width:100%;
+    }
+
+    .navbar-item{
+        flex: 100%;
+        min-width: 100%;
+        margin:10px;
+    }
+
+}
